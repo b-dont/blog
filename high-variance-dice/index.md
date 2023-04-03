@@ -3,7 +3,7 @@ title = "High Variance Dice"
 description = "How changing your dice can change your game experience."
 template = "blog_post.html"
 date = 2023-04-03
-draft = true
+draft = false
 [taxonomies]
 tags = ["ttrpg", "gaming"]
 +++
