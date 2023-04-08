@@ -8,4 +8,4 @@ draft = true
 tags = ["ansible", "docker", "devops"]
 +++
 
-My current position involves monitoring and managing enterprise environments for numerous companies.
+My current position involves monitoring large enterprise environments for numerous clients. As the company grows, the need to scale our operations grows with it. Recently, I've been experimenting with [Ansible](https://ansible.com) to scale our agent deployment to large environments.
