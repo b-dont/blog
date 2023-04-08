@@ -7,4 +7,5 @@ draft = true
 [taxonomies]
 tags = ["ansible", "docker", "devops"]
 +++
+
 My current position involves monitoring and managing enterprise environments for numerous companies.
