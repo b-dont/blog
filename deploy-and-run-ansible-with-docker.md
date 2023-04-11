@@ -1,5 +1,5 @@
 +++
-title = "Deploy and Run Ansible With Docker"
+title = "Deploy and Run Ansible with Docker"
 description = "How to deploy and run your Ansible instance in a scalable way with Docker."
 template = "blog_post.html"
 date = 2023-04-11
