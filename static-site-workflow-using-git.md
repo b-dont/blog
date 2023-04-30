@@ -7,7 +7,7 @@ draft = false
 [taxonomies]
 tags = ["git", "webdev", "devops"]
 +++
-This website and its contents are deployed to my VPS via git. The reposidtory is pushed to a production remote and uses hooks to run some basic scripts that organize the incoming content. This is _almost_ CI/CD, but not quite; regardless, git can be a powerfull tool to build simple deployment pipelines to remote servers.
+This website and its contents are deployed to my VPS via git. The reposidtory is pushed to a production remote and uses hooks to run some basic scripts that organize the incoming content. This is _almost_ CI/CD, but not quite; regardless, git can be a powerful tool to build simple deployment pipelines to remote servers.
 <!-- more -->
 
 ### Local and Remote Repo Setup
@@ -33,7 +33,7 @@ Now, let's add this bare repository as a remote to our local repo by running the
 git remote add prod me@myserver:/var/www/my-website-bare
 ```
 
-For the purpouses of this little walk through, I won't get into the weeds of each of these files and drectories; the only directory we're concerned with here is `hooks`. [Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) are scripts that Git will execute when certain events happen in the repository. They are flexible and very useful when automating workflows that involve Git. I use them in my website's production workflow, and in some of my development workflows. 
+For the purposes of this little walk through, I won't get into the weeds of each of these files and directories; the only directory we're concerned with here is `hooks`. [Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) are scripts that Git will execute when certain events happen in the repository. They are flexible and very useful when automating workflows that involve Git. I use them in my website's production workflow, and in some of my development workflows. 
 
 ### The `post-receive` Hook
 The workflow we're aiming for here is as follows:
@@ -55,7 +55,7 @@ cd /var/www/my-website-prod || exit
 git --git-dir=/var/www/my-website-prod/.git pull prod main
 ```
 
-The first thing you'll notice here, is we have another website repository at `/var/www/my-website-prod`. This is where the website will actually live, and where your webserver will be pointing to your static files. Go ahead and navigate there and run the following:
+The first thing you'll notice here, is we have another website repository at `/var/www/my-website-prod`. This is where the website will actually live, and where your web server will be pointing to your static files. Go ahead and navigate there and run the following:
 ```
 git clone /var/www/my-website-bare /var/www/my-website-prod
 ```
@@ -66,4 +66,4 @@ So to break down our `post-receive` hook: Lines 4, 5, and 6 will unset the git e
 Now, when you run a `git push prod main` in your local repository, it will push to the bare remote, the `post-receive` hook will trigger, and will then pull the code from the bare repo, to the production repo.
 
 ### Conclusion
-The flexability of Git hooks are very useful. I throw in other script calls to run tests and rebuild my website on a single push, allowing me to deploy changes to the website without ever having to `ssh` to my production server, creating a small and effecient CI/CD pipeline for my personal website. Easy peasy, right? Have fun!
+The flexibility of Git hooks are very useful. I throw in other script calls to run tests and rebuild my website on a single push, allowing me to deploy changes to the website without ever having to `ssh` to my production server, creating a small and efficient CI/CD pipeline for my personal website. Easy peasy, right? Have fun!
