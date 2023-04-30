@@ -51,7 +51,7 @@ foreign_desc=$(unset $(git rev-parse --local-env-vars); git -C /var/www/my-websi
 
 # navigate to the production repo and execute 
 # a git pull on the prod main branch 
-cd /var/www/brandont.dev-prod || exit
+cd /var/www/my-website-prod || exit
 git --git-dir=/var/www/my-website-prod/.git pull prod main
 ```
 
