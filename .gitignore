@@ -1,4 +1,6 @@
 .git/*
-archive.md
 _index.md
+archive.md
 new-blog.sh
+
+drafts/*
