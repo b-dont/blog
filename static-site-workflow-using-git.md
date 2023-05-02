@@ -7,7 +7,7 @@ draft = false
 [taxonomies]
 tags = ["git", "webdev", "devops"]
 +++
-This website and its contents are deployed to my VPS via git. The repository is pushed to a production remote and uses hooks to run some basic scripts that organize the incoming content. This is _almost_ CI/CD, but not quite; regardless, git can be a powerful tool to build simple deployment pipelines to remote servers.
+This website and its contents are deployed to my VPS via git. The repository is pushed to a production remote and uses hooks to run some basic scripts that organize the incoming content. Git can be a powerful tool to build simple deployment pipelines to remote servers.
 <!-- more -->
 
 ### Local and Remote Repo Setup
