@@ -11,7 +11,7 @@ This website and its contents are deployed to my VPS via git. The repository is 
 <!-- more -->
 
 ### Local and Remote Repo Setup
-First, we want to set up the basic development repository with a `git init`. I always have a remote backup to push to on Codeberg, weather I plan on publishing the code publically or not, for some redundancy. Run a `git remote add origin git@example.com/me/my-remote`, and of course replace this example repo URL with your real one. 
+First, we want to set up the basic development repository with a `git init`. I always have a remote backup to push to on Codeberg, weather I plan on publishing the code publicly or not, for some redundancy. Run a `git remote add origin git@example.com/me/my-remote`, and of course replace this example repo URL with your real one. 
 
 Next, we're going to set up our production remote. Connect to your target server, and navigate to the `/var/www` directory, then run `mkdir my-website-bare`. In this post, I'm going to be using a static website as an example, and it's common for production websites to live in this directory. Once, there run `git init --bare` to initialize a [bare git repository](https://git-scm.com/book/en/v2/Git-on-the-Server-Getting-Git-on-a-Server). You'll notice that the bare repo does not have a `.git` directory, but instead will show all the contents of what _would_ be in that directory at the root.
 
