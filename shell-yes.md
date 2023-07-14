@@ -9,6 +9,7 @@ tags = ["bash", "zsh", "shell", "linux"]
 +++
 
 For any Linux enthusiast, administrator, developer, systems engineer, or overall neck-beard, the terminal is the meat and potatoes of a good chunk of day-to-day work and interaction with Linux. Your terminal's shell is a powerful tool to make your work easier and more fun to work with.
+<!-- more -->
 
 Configuring your shell to work for your needs is a useful skill to have and is at the heart of automation in your terminal environment. We computer nerds are lazy and love tweaking computer environments to do work for us.
 
