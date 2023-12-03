@@ -50,7 +50,7 @@ def get_numbers(line):
 
 Our `get_numbers()` function changed a bit. Firstly, we're using the [`finditer()`](https://docs.python.org/3/library/re.html#re.finditer) method instead of `findall()`, which comes with a neat little flag that will also return overlapping results. There were many instances of stuff like `oneight` or `twone` in the input strings that were hard to catch and kind of a subtle challenge. The regex itself now includes `[0-9?]` to find each single digit, or (`|`) one of the nine word numbers. The return now has to call the `group(0)` index of the `Match` objects found and returned by the method, which are the string literals of what we're looking for.
 
-Next, I made a quick and dirty substitution from the work numbers to their digits using a dict lookup:
+Next, I made a quick and dirty substitution from the word numbers to their digits using a dict lookup:
 ```python
 def sub_string(str):
     num_dict = {
