@@ -41,7 +41,7 @@ with open("input.txt") as input:
 Part one, completed.
 
 ### Part Two
-The second part was a bit more complicated. Now, in addition to extracting the digits in order, we also needed to extract the numbers that were *spelled out* in the string. Ultimately, I landed on using regex again, however there was a consideration for *overlapping* number words that needed to be considered. Luckily, the `regex` library had another function to use with an argument that considered overlapping results.
+The second part was a bit more complicated. Now, in addition to extracting the digits in order, we also needed to extract the numbers that were *spelled out* in the string. Ultimately, I landed on using regex again, however there was a consideration for *overlapping* number words, in additon to the digits. Luckily, the `regex` library had another function to use with an argument that considered overlapping results.
 ```python
 def get_numbers(line):
     matches = list(re.finditer(r"[0-9?]|(one|two|three|four|five|six|seven|eight|nine)", line, overlapped=True))
