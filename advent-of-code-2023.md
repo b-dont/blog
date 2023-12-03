@@ -4,6 +4,7 @@ description = "Master post of Advent of Code for 2023"
 authors = ["Brandon Phillips"]
 template = "blog_post.html"
 date = "2023-12-02"
+updated = "2023-12-03"
 draft = false
 [taxonomies]
 tags = ["aoc", "python"]
@@ -91,3 +92,107 @@ with open("input.txt") as input:
 
     print(sum(results))
 ```
+
+## Day 2
+### Part One
+
+This one had my brain rolling at first, but then after understanding how the data needed to be structured, it was fairly simple. First, we pulled the results of the game from each line in the input file.
+```python
+def get_results(line):
+    return line.split(": ")[1].split("; ")
+```
+
+This function splits the line at the single colon, then returns a list from another split on the `;`, which represents each result of the game.
+
+Next, we examine each of the results and run it through a function that uses the `match` keyword to test each color's result against a pre-defined constant, and returs if the result is possible or not.
+```python
+RED = 12
+GREEN = 13
+BLUE = 14
+
+def checkif_possible(pair):
+    is_possible = True
+    quant = int(pair[0])
+
+    match pair[1].rstrip():
+        case "red":
+            if quant > RED:
+                is_possible = False
+        case "green":
+            if quant > GREEN:
+                is_possible = False
+        case "blue":
+            if quant > BLUE:
+                is_possible = False
+        case _:
+            raise ValueError("Not a color")
+
+    return is_possible
+```
+
+The default `case` statement here actually exposed a subtle problem in the input data; some of the strings contained `\n` characters in them which caused the `match` to default, which raised the `ValueError()`. Because of this, I added the `rstrip()` method on the `match` input to get rid of these, so we could match on everything.
+
+Now, we build the main loop, and a quick little function to extract the Game ID number, then `sum()` all the IDs we pull from the loop.
+```python
+def get_id(game):
+    return int(game.split(": ")[0].split(" ")[1])
+
+with open("input.txt") as input:
+    all_games = []
+    for line in input:
+        results = get_results(line)
+        game_is_possible = True
+        for result in results:
+            for pair in result.split(", "):
+                if not checkif_possible(pair.split(" ")):
+                    game_is_possible = False
+                    break
+
+        if game_is_possible:
+            all_games.append(get_id(line))
+
+    print(sum(all_games))
+```
+
+### Part Two
+This one was trickier, but my issue with it actually came down to a misunderstanding of how Python uses the `+=` opperator on strings, and my mistake of not casting the types for the digits right away.
+
+So the first things I did was extract each of the results of each line into a dict with the keys set to the colors, and the values set to all the results of that color.
+```python
+def order_results(results):
+    ordered_results = {
+        "red": [],
+        "blue": [],
+        "green": []
+    }
+
+    for result in results:
+        for pair in result.split(", "):
+            ordered_results[pair.split(" ")[1].rstrip()].append(int(pair.split(" ")[0]))
+
+    return ordered_results
+```
+
+Now that we've organized all of the results for each color, we need to find the largest result of each color, for each game, and multiply those results together, and throw that result into a list.
+```python
+from functools import reduce
+
+def find_largest(results):
+    return int(max(results))
+
+def get_power(results):
+    return reduce(lambda x, y: x*y, results)
+
+with open("input.txt") as input:
+    all_power = []
+    for line in input:
+        current_results = []
+        for color, results in order_results(line.split(": ")[1].split("; ")).items():
+            current_results.append(find_largest(results))
+
+        all_power.append(get_power(current_results))
+
+    print(sum(all_power))
+```
+
+At the end there, we take the list of power results we've built and add them all together, producing our result. Voila, the answer.
