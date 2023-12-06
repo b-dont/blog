@@ -2,7 +2,7 @@
 title = "Advent of Code 2023"
 description = "Master post of Advent of Code for 2023"
 authors = ["Brandon Phillips"]
-template = "blog_post_toc.html"
+template = "blog_post.html"
 date = "2023-12-02"
 updated = "2023-12-03"
 draft = false
