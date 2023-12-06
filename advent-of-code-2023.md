@@ -4,7 +4,7 @@ description = "Master post of Advent of Code for 2023"
 authors = ["Brandon Phillips"]
 template = "blog_post.html"
 date = "2023-12-02"
-updated = "2023-12-03"
+updated = "2023-12-05"
 draft = false
 [taxonomies]
 tags = ["aoc", "python"]
