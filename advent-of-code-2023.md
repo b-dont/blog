@@ -2,7 +2,7 @@
 title = "Advent of Code 2023"
 description = "Master post of Advent of Code for 2023"
 authors = ["Brandon Phillips"]
-template = "blog_post.html"
+template = "blog_post_toc.html"
 date = "2023-12-02"
 updated = "2023-12-03"
 draft = false
@@ -13,7 +13,9 @@ tags = ["aoc", "python"]
 This is my Advent of Code master post for 2023! I know it's already day 2, but I just had the idea so I'm doing it now. What's the purpouse of this master post? What *is* a "master post?" Well, basically, I'll be placing my solutions for each AOC puzzle here, and updating the same blog post as I go. I'll walk through the steps I took to arrive at the solution, and some things I may have learned along the way. Hopefully, it'll turn out useful for someone somewhere.
 <!-- more -->
 
+---
 ## Day 1
+---
 ### Part One
 Part one was, for the most part, pretty straight forward. Find all the ditigs and put the first and last digits together to make a number, then add all of those numbers.
 
@@ -93,7 +95,9 @@ with open("input.txt") as input:
     print(sum(results))
 ```
 
+---
 ## Day 2
+---
 ### Part One
 
 This one had my brain rolling at first, but then after understanding how the data needed to be structured, it was fairly simple. First, we pulled the results of the game from each line in the input file.
@@ -196,3 +200,241 @@ with open("input.txt") as input:
 ```
 
 At the end there, we take the list of power results we've built and add them all together, producing our result. Voila, the answer.
+
+---
+## Day 3
+---
+### Part One
+This one really threw me for a loop. I only realized at the tail end of my head-banging that this is effectively navigating and operating on a matrix; had I thought of it this way *earlier*, I would have looked at [NumPy's Matrix](https://numpy.org/doc/stable/reference/generated/numpy.matrix.html) class, and probably would have had an easier time.
+
+Firstly, I wanted to represent the numbers we're concerned with by using a `Number` class.
+```python
+class Number:
+    position: (int, int)
+    num: int
+    line: str
+    is_part: bool
+    match: re.Match
+
+    def __init__(self, x, y, num, line, match):
+        self.position = (x, y)
+        self.num = num
+        self.line = line
+        self.is_part = False
+        self.match = match
+
+    def get_len(self):
+        return int(len(self.num))
+
+    def get_position(self):
+        return self.position
+
+    def get_x(self):
+        return self.position[0]
+
+    def get_y(self):
+        return self.position[1]
+
+    def is_start(self):
+        if self.position[0] == 0:
+            return True
+        else:
+            return False
+
+    def is_end(self):
+        if self.match.end() == len(self.line):
+            return True
+        else:
+            return False
+```
+
+When parsing the input (using regex again, I'll get to that), we'll be building this class using any number we find. The class will contain the information regarding the number, where it's at in the matrix, what the number is, what its length is, and the actual `Match` object returned from the regex method. 
+
+We'll use this method to find the numbers:
+```python
+def find_numbers(line, index):
+    regex = re.compile(r"\d+")
+    numbers = []
+    for i in regex.finditer(line):
+        if i is not None:
+            numbers.append(Number(i.start(), index, i.group(), line, i))
+
+    return numbers
+```
+
+After we've found a number, we add it to a list:
+```python
+with open("input.txt") as input:
+    lines = defaultdict(str)
+    index = 0
+    all_numbers = []
+
+    for line in input:
+        lines[index] += line.rstrip()
+        index += 1
+
+    for index, line in lines.items():
+        all_numbers += find_numbers(line, index)
+```
+
+Once we have our list, we'll run through it and check all the adjacent indices for any non-`\d` and non-`\.` characters, and change the `is_part` attribute of our class to `True`. We also need to account for *where* the number exists on the line in the matrix, because our checks will be slightly different for `[0]` and `[-1]` indexed numbers.
+
+```python
+def check_adjacent(num, lines):
+    range = ()
+    if num.get_x() == 0:
+        range = (num.get_x(), num.get_x() + len(num.num) + 1)
+    elif num.is_end():
+        range = (num.get_x() - 1, num.get_x() + len(num.num))
+    else:
+        range = (num.get_x() - 1, num.get_x() + len(num.num) + 1)
+
+    regex = re.compile(r"[^\d\.]")
+    for line in lines:
+        results = regex.finditer(line, pos=range[0], endpos=range[1])
+        for result in results:
+            if result is not None:
+                num.is_part = True
+```
+
+Fetching the adjacent lines to check is similar, so we check the `index` attribute of the class and compare it to our matrix's `y` axis (which is a dict, with each key being the line number, and each value being that line, so key=y, and value=x), to check for the first and last lines, so we don't get an indexing error.
+
+After all the collection, math, and headaches, we then add up the numbers who's `is_part` is true by pushing them to a list, and running the `sum(parts)` method, pooping out the answer!
+```python
+with open("input.txt") as input:
+    lines = defaultdict(str)
+    index = 0
+    all_numbers = []
+    parts = []
+
+    for line in input:
+        lines[index] += line.rstrip()
+        index += 1
+
+    for index, line in lines.items():
+        all_numbers += find_numbers(line, index)
+
+    for num in all_numbers:
+        adjacent_lines = []
+        adjacent_lines.append(num.line)
+
+        if num.get_y() == 0:
+            adjacent_lines.append(lines[num.get_y() + 1])
+        elif num.get_y() == len(lines) - 1:
+            adjacent_lines.append(lines[num.get_y() - 1])
+        else:
+            adjacent_lines.append(lines[num.get_y() - 1])
+            adjacent_lines.append(lines[num.get_y() + 1])
+
+        check_adjacent(num, adjacent_lines)
+
+        if num.is_part:
+            parts.append(int(num.num))
+
+    print(sum(parts), parts)
+```
+
+Here's the final result:
+```python
+import re
+from collections import defaultdict
+
+
+class Number:
+    position: (int, int)
+    num: int
+    line: str
+    is_part: bool
+    match: re.Match
+
+    def __init__(self, x, y, num, line, match):
+        self.position = (x, y)
+        self.num = num
+        self.line = line
+        self.is_part = False
+        self.match = match
+
+    def get_len(self):
+        return int(len(self.num))
+
+    def get_position(self):
+        return self.position
+
+    def get_x(self):
+        return self.position[0]
+
+    def get_y(self):
+        return self.position[1]
+
+    def is_start(self):
+        if self.position[0] == 0:
+            return True
+        else:
+            return False
+
+    def is_end(self):
+        if self.match.end() == len(self.line):
+            return True
+        else:
+            return False
+
+
+def check_adjacent(num, lines):
+    range = ()
+    if num.get_x() == 0:
+        range = (num.get_x(), num.get_x() + len(num.num) + 1)
+    elif num.is_end():
+        range = (num.get_x() - 1, num.get_x() + len(num.num))
+    else:
+        range = (num.get_x() - 1, num.get_x() + len(num.num) + 1)
+
+    regex = re.compile(r"[^\d\.]")
+    for line in lines:
+        results = regex.finditer(line, pos=range[0], endpos=range[1])
+        for result in results:
+            if result is not None:
+                num.is_part = True
+
+
+def find_numbers(line, index):
+    regex = re.compile(r"\d+")
+    numbers = []
+    for i in regex.finditer(line):
+        if i is not None:
+            numbers.append(Number(i.start(), index, i.group(), line, i))
+
+    return numbers
+
+
+with open("input.txt") as input:
+    lines = defaultdict(str)
+    index = 0
+    all_numbers = []
+    parts = []
+
+    for line in input:
+        lines[index] += line.rstrip()
+        index += 1
+
+    for index, line in lines.items():
+        all_numbers += find_numbers(line, index)
+
+    for num in all_numbers:
+        adjacent_lines = []
+        adjacent_lines.append(num.line)
+
+        if num.get_y() == 0:
+            adjacent_lines.append(lines[num.get_y() + 1])
+        elif num.get_y() == len(lines) - 1:
+            adjacent_lines.append(lines[num.get_y() - 1])
+        else:
+            adjacent_lines.append(lines[num.get_y() - 1])
+            adjacent_lines.append(lines[num.get_y() + 1])
+
+        check_adjacent(num, adjacent_lines)
+
+        if num.is_part:
+            parts.append(int(num.num))
+
+    print(sum(parts), parts)
+```
