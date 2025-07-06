@@ -11,7 +11,7 @@ tags = ["docker", "zola", "git", "devops"]
 
 Hello, world! It's been a while since I've posted on this blog, but better late than never, right? This is coming to you from a new domain [btp.dev](https://btp.dev) and a new workflow for this static site. I've been really getting into build and deployment pipelines lately, so I figured I'd write up a little blurb about what I've done for this site.
 <!-- more -->
-## Caddy
+### Caddy
 My old config was a simple nginx service running on a Linux manchine that was serving static files. This time, I wanted to take advantage of some newer software to build and serve the site. [Caddy](https://caddyserver.com/) comes out of the box with some really kick-ass features, like auto-HTTPS, reverse proxies, an admin API, and it's super easy to get it all up and running in a container environment. I went with this over nginx for the server.
 
 All you really need is the `compose.yml` file provided in the docs. So far, Caddy is the only service that the compose file is building, but there's room to add other stuff in here in the future, so I'm going to keep it under a `compose.yml` for now. I've made some small adjustments to the doc's `compose` I'll talk about next.
@@ -36,7 +36,7 @@ volumes:
   caddy_config:
 ```
 
-## Zola
+### Zola
 The static site generation is still [Zola](https://www.getzola.org/); I've been very happy with it since I started using it a couple of years ago, and I don't have any reason to stop using it. Zola itself is also running in a container, generating the site's public files and handing them over to the Caddy image to serve. You'll notice the `dockerfile` under the `build` directive in the `compose.yml` file; this is pointing to the following `Containerfile`:
 ```
 # Containerfile
@@ -55,7 +55,7 @@ This `Containerfile` builds our site's container. First, we use the `FROM` instr
 
 Once Zola builds the site, we pull the Caddy image, and copy the build files over to the Caddy image, set the `/public` directory, and that's it!
 
-## The Caddyfile
+### The Caddyfile
 Caddy's config is even smaller than the Docker stuff:
 ```
 # Caddyfile
@@ -83,7 +83,7 @@ The top brackets are the `Caddyfile`'s Global Options; here we've set the `acme_
 
 I've added a `localhost` site block here for local development, and then the production block for the website. We just tell Caddy where the root of the site is, call the `file_server` directive, and it does the rest.
 
-## Deployment
+### Deployment
 I've written about [deploying static sites with git before](@/blog/static-site-workflow-using-git.md) and I'll be using those basic concepts here as well, with some small changes. The basic setup is three repositories:
 ```
 ~/btp.dev # Local repository - development
